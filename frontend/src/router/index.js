@@ -29,6 +29,27 @@ const router = createRouter({
           name: "admin-roles",
           component: () => import("../views/admin/Roles.vue"),
         },
+        // Academic Routes
+        {
+          path: "academic/years",
+          name: "academic-years",
+          component: () => import("../views/admin/academic/Years.vue"),
+        },
+        {
+          path: "academic/structure",
+          name: "academic-structure",
+          component: () => import("../views/admin/academic/Structure.vue"),
+        },
+        {
+          path: "academic/rooms",
+          name: "academic-rooms",
+          component: () => import("../views/admin/academic/Rooms.vue"),
+        },
+        {
+          path: "academic/classes",
+          name: "academic-classes",
+          component: () => import("../views/admin/academic/Classes.vue"),
+        },
       ],
     },
   ],

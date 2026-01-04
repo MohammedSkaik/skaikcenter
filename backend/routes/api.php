@@ -26,11 +26,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Permission Management Routes
-    // Ensure only Super Admin or capable Center Admin can access these
     Route::group(['middleware' => ['role:super_admin|center_admin']], function () {
         Route::apiResource('roles', RoleController::class);
         Route::get('permissions', PermissionController::class);
         Route::apiResource('managers', ManagerController::class);
+
+        // Phase 2: Academic Controls
+        Route::apiResource('academic-years', AcademicController::class);
+        Route::post('academic-years/{academicYear}/semesters', [AcademicController::class, 'storeSemester']);
+        Route::put('semesters/{semester}', [AcademicController::class, 'updateSemester']);
+        Route::delete('semesters/{semester}', [AcademicController::class, 'destroySemester']);
+
+        Route::apiResource('grades', StructureController::class);
+        Route::post('grades/{grade}/subjects', [StructureController::class, 'storeSubject']);
+        Route::put('subjects/{subject}', [StructureController::class, 'updateSubject']);
+        Route::delete('subjects/{subject}', [StructureController::class, 'destroySubject']);
+
+        Route::apiResource('rooms', RoomController::class);
+        Route::apiResource('study-classes', StudyClassController::class);
     });
 
 });

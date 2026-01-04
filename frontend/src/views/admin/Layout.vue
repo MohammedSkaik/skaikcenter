@@ -6,6 +6,16 @@
       <nav class="mt-4">
         <router-link to="/admin/managers" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mx-2">المدراء والصلاحيات</router-link>
         <router-link to="/admin/roles" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mx-2">الأدوار الوظيفية</router-link>
+        
+        <div class="border-t border-indigo-700 my-2 mx-2"></div>
+        <div class="px-4 py-2 text-indigo-200 text-sm">الشؤون التعليمية</div>
+        
+        <router-link to="/admin/academic/years" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mx-2">السنوات والفصول</router-link>
+        <router-link to="/admin/academic/structure" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mx-2">الهيكل التعليمي</router-link>
+        <router-link to="/admin/academic/rooms" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mx-2">القاعات</router-link>
+        <router-link to="/admin/academic/classes" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mx-2">الشعب الدراسية</router-link>
+
+        <div class="border-t border-indigo-700 my-2 mx-2"></div>
         <a href="#" @click.prevent="logout" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-indigo-700 mt-8 text-red-200 mx-2">تسجيل الخروج</a>
       </nav>
     </aside>
