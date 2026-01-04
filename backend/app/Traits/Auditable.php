@@ -28,7 +28,7 @@ trait Auditable
 
         // Set deleted_by on deletion (Soft Delete)
         static::deleting(function ($model) {
-            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($model))) {
+            if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive($model))) {
                 if (Auth::check()) {
                     $model->deleted_by = Auth::id();
                 }
