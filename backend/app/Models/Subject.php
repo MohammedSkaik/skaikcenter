@@ -8,18 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Subject extends BaseModel
 {
     protected $fillable = [
-        'grade_id',
         'name',
-        'price_package',
-        'price_single',
+        // Audit fields
         'created_by',
         'updated_by',
         'deleted_by',
         'is_deleted'
     ];
 
-    public function grade(): BelongsTo
+    public function grades()
     {
-        return $this->belongsTo(Grade::class);
+        return $this->belongsToMany(Grade::class, 'grade_subject')
+            ->withPivot('price_package', 'price_single')
+            ->withTimestamps();
     }
 }

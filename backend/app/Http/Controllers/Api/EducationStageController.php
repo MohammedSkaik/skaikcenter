@@ -7,7 +7,7 @@ use App\Models\Grade;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 
-class StructureController extends Controller
+class EducationStageController extends Controller
 {
     // Grades (Marhala)
     public function index()
@@ -45,34 +45,45 @@ class StructureController extends Controller
         return response()->json(['message' => 'Grade deleted']);
     }
 
-    // Subjects (Madda)
+    // Attach Subject to Grade
     public function storeSubject(Request $request, Grade $grade)
     {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'subject_id' => 'required|exists:subjects,id',
             'price_package' => 'numeric|min:0',
             'price_single' => 'numeric|min:0'
         ]);
 
-        $subject = $grade->subjects()->create($validated);
-        return response()->json(['message' => 'Subject created', 'data' => $subject], 201);
+        // Check if already attached
+        if ($grade->subjects()->where('subject_id', $validated['subject_id'])->exists()) {
+            return response()->json(['message' => 'Subject already attached to this grade'], 422);
+        }
+
+        $grade->subjects()->attach($validated['subject_id'], [
+            'price_package' => $validated['price_package'] ?? 0,
+            'price_single' => $validated['price_single'] ?? 0
+        ]);
+
+        return response()->json(['message' => 'Subject attached successfully']);
     }
 
-    public function updateSubject(Request $request, Subject $subject)
+    // Update Subject Prices in Grade
+    public function updateSubject(Request $request, Grade $grade, Subject $subject)
     {
         $validated = $request->validate([
-            'name' => 'string',
             'price_package' => 'numeric|min:0',
             'price_single' => 'numeric|min:0'
         ]);
 
-        $subject->update($validated);
-        return response()->json(['message' => 'Subject updated', 'data' => $subject]);
+        $grade->subjects()->updateExistingPivot($subject->id, $validated);
+
+        return response()->json(['message' => 'Subject prices updated']);
     }
 
-    public function destroySubject(Subject $subject)
+    // Detach Subject from Grade
+    public function destroySubject(Grade $grade, Subject $subject)
     {
-        $subject->delete();
-        return response()->json(['message' => 'Subject deleted']);
+        $grade->subjects()->detach($subject->id);
+        return response()->json(['message' => 'Subject detached']);
     }
 }

@@ -17,8 +17,10 @@ class Grade extends BaseModel
         'is_deleted'
     ];
 
-    public function subjects(): HasMany
+    public function subjects()
     {
-        return $this->hasMany(Subject::class);
+        return $this->belongsToMany(Subject::class, 'grade_subject')
+            ->withPivot('price_package', 'price_single')
+            ->withTimestamps();
     }
 }

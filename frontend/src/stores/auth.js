@@ -24,13 +24,27 @@ export const useAuthStore = defineStore("auth", {
       }
     },
     async login(credentials) {
-      await api.get("/sanctum/csrf-cookie");
-      await api.post("/login", credentials);
-      await this.fetchUser();
+      // Token Based Auth
+      const response = await api.post("/api/login", credentials);
+      const token = response.data.access_token;
+
+      localStorage.setItem("token", token);
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Update axios instance
+
+      this.user = response.data.user;
     },
     async logout() {
-      await api.post("/logout");
+      await api.post("/api/logout");
+      localStorage.removeItem("token");
+      delete api.defaults.headers.common["Authorization"];
       this.user = null;
+    },
+    async checkAuth() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        await this.fetchUser();
+      }
     },
   },
 });

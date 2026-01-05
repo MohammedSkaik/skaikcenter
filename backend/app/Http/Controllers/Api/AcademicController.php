@@ -57,6 +57,8 @@ class AcademicController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
             'status' => 'in:active,inactive,archived'
         ]);
 
@@ -69,6 +71,8 @@ class AcademicController extends Controller
     {
         $validated = $request->validate([
             'name' => 'string',
+            'start_date' => 'date',
+            'end_date' => 'date|after:start_date',
             'status' => 'in:active,inactive,archived'
         ]);
 

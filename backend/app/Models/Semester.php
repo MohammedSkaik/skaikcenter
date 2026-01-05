@@ -11,6 +11,9 @@ class Semester extends BaseModel
         'academic_year_id',
         'name',
         'status',
+        'start_date',
+        'end_date',
+        // Audit fields
         'created_by',
         'updated_by',
         'deleted_by',

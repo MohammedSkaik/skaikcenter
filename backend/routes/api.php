@@ -5,7 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\{
     RoleController,
     PermissionController,
-    ManagerController
+    ManagerController,
+    AcademicController,
+    EducationStageController, // Renamed from StructureController
+    SubjectController, // New
+    RoomController,
+    StudyClassController,
+    AuthController
 };
 
 /*
@@ -18,6 +24,9 @@ use App\Http\Controllers\Api\{
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -37,10 +46,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('semesters/{semester}', [AcademicController::class, 'updateSemester']);
         Route::delete('semesters/{semester}', [AcademicController::class, 'destroySemester']);
 
-        Route::apiResource('grades', StructureController::class);
-        Route::post('grades/{grade}/subjects', [StructureController::class, 'storeSubject']);
-        Route::put('subjects/{subject}', [StructureController::class, 'updateSubject']);
-        Route::delete('subjects/{subject}', [StructureController::class, 'destroySubject']);
+        // Subjects (Global)
+        Route::apiResource('subjects', SubjectController::class);
+
+        // Education Stages (Grades)
+        Route::apiResource('grades', EducationStageController::class);
+        // Pivot: Attach/Detach Subject to Grade
+        Route::post('grades/{grade}/subjects', [EducationStageController::class, 'storeSubject']); // Attach
+        Route::put('grades/{grade}/subjects/{subject}', [EducationStageController::class, 'updateSubject']); // Update Pivot
+        Route::delete('grades/{grade}/subjects/{subject}', [EducationStageController::class, 'destroySubject']); // Detach
 
         Route::apiResource('rooms', RoomController::class);
         Route::apiResource('study-classes', StudyClassController::class);

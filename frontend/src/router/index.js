@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-// import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from "../stores/auth";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +18,7 @@ const router = createRouter({
       path: "/admin",
       name: "admin",
       component: () => import("../views/admin/Layout.vue"),
+      meta: { requiresAuth: true }, // Add meta field
       children: [
         {
           path: "managers",
@@ -36,9 +37,15 @@ const router = createRouter({
           component: () => import("../views/admin/academic/Years.vue"),
         },
         {
-          path: "academic/structure",
-          name: "academic-structure",
-          component: () => import("../views/admin/academic/Structure.vue"),
+          path: "academic/education-stages",
+          name: "academic-education-stages",
+          component: () =>
+            import("../views/admin/academic/EducationStages.vue"),
+        },
+        {
+          path: "academic/subjects",
+          name: "academic-subjects",
+          component: () => import("../views/admin/academic/Subjects.vue"),
         },
         {
           path: "academic/rooms",
@@ -53,6 +60,23 @@ const router = createRouter({
       ],
     },
   ],
+});
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+
+  // Attempt to fetch user if not present (handled by simple check or session logic)
+  if (!authStore.user) {
+    await authStore.fetchUser();
+  }
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({ name: "login" });
+  } else if (to.name === "login" && authStore.isAuthenticated) {
+    next({ name: "admin-managers" }); // Redirect logged-in users away from login
+  } else {
+    next();
+  }
 });
 
 export default router;
