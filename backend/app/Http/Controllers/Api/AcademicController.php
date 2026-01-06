@@ -20,7 +20,11 @@ class AcademicController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|unique:academic_years,name',
+            'name' => [
+                'required',
+                'string',
+                \Illuminate\Validation\Rule::unique('academic_years')->whereNull('deleted_at')
+            ],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
@@ -35,7 +39,10 @@ class AcademicController extends Controller
     public function update(Request $request, AcademicYear $academicYear)
     {
         $validated = $request->validate([
-            'name' => 'string|unique:academic_years,name,' . $academicYear->id,
+            'name' => [
+                'string',
+                \Illuminate\Validation\Rule::unique('academic_years')->ignore($academicYear->id)->whereNull('deleted_at')
+            ],
             'start_date' => 'date',
             'end_date' => 'date|after:start_date',
             'status' => 'in:active,inactive,archived'
@@ -48,8 +55,23 @@ class AcademicController extends Controller
 
     public function destroy(AcademicYear $academicYear)
     {
-        $academicYear->delete();
-        return response()->json(['message' => 'Year deleted']);
+        // Force delete related data to ensure clean removal
+        // Note: Ideally these should be foreign key cascades, but explicit delete is safer for logic awareness
+        \DB::transaction(function () use ($academicYear) {
+            // Delete Classes ? (Study Classes usually depend on Semester OR Year)
+            // $academicYear->study_classes()->delete(); 
+
+            // Delete Grades (Education Stages)
+            $academicYear->grades()->delete();
+
+            // Delete Semesters
+            $academicYear->semesters()->delete();
+
+            // Finally delete the year
+            $academicYear->delete();
+        });
+
+        return response()->json(['message' => 'Year and all related data deleted successfully']);
     }
 
     // Semesters

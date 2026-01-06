@@ -18,7 +18,11 @@ class SubjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|unique:subjects,name'
+            'name' => [
+                'required',
+                'string',
+                \Illuminate\Validation\Rule::unique('subjects')->whereNull('deleted_at')->where('is_deleted', 0)
+            ]
         ]);
 
         $subject = Subject::create($validated);
@@ -28,7 +32,10 @@ class SubjectController extends Controller
     public function update(Request $request, Subject $subject)
     {
         $validated = $request->validate([
-            'name' => 'string|unique:subjects,name,' . $subject->id
+            'name' => [
+                'string',
+                \Illuminate\Validation\Rule::unique('subjects')->ignore($subject->id)->whereNull('deleted_at')->where('is_deleted', 0)
+            ]
         ]);
 
         $subject->update($validated);

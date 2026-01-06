@@ -30,9 +30,20 @@ class ManagerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->whereNull('deleted_at')->where('is_deleted', 0)
+            ],
             'phone' => 'nullable|string|max:20',
-            'identification_number' => 'nullable|string|max:20|unique:users',
+            'identification_number' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('users')->whereNull('deleted_at')->where('is_deleted', 0)
+            ],
             'password' => 'required|string|min:8',
             'type' => ['required', Rule::in(['center_admin', 'sub_admin'])],
             'roles' => 'array',
@@ -88,7 +99,11 @@ class ManagerController extends Controller
 
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'email' => ['sometimes', 'email', Rule::unique('users')->ignore($manager->id)],
+            'email' => [
+                'sometimes',
+                'email',
+                Rule::unique('users')->ignore($manager->id)->whereNull('deleted_at')->where('is_deleted', 0)
+            ],
             'phone' => 'nullable|string',
             'type' => ['sometimes', Rule::in(['center_admin', 'sub_admin'])],
             'roles' => 'array',

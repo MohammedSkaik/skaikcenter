@@ -28,7 +28,15 @@ class StudyClassController extends Controller
         $validated = $request->validate([
             'semester_id' => 'required|exists:semesters,id',
             'grade_id' => 'required|exists:grades,id',
-            'name' => 'required|string',
+            'name' => [
+                'required',
+                'string',
+                \Illuminate\Validation\Rule::unique('study_classes')
+                    ->where('semester_id', $request->semester_id)
+                    ->where('grade_id', $request->grade_id)
+                    ->whereNull('deleted_at')
+                    ->where('is_deleted', 0)
+            ],
             'type' => 'required|in:package,single',
             'subject_id' => 'required_if:type,single|nullable|exists:subjects,id',
             'max_students' => 'integer|min:1'
@@ -41,7 +49,15 @@ class StudyClassController extends Controller
     public function update(Request $request, StudyClass $studyClass)
     {
         $validated = $request->validate([
-            'name' => 'string',
+            'name' => [
+                'string',
+                \Illuminate\Validation\Rule::unique('study_classes')
+                    ->where('semester_id', $studyClass->semester_id)
+                    ->where('grade_id', $studyClass->grade_id)
+                    ->ignore($studyClass->id)
+                    ->whereNull('deleted_at')
+                    ->where('is_deleted', 0)
+            ],
             'max_students' => 'integer|min:1',
             'type' => 'in:package,single',
             'subject_id' => 'required_if:type,single|nullable|exists:subjects,id',

@@ -27,4 +27,9 @@ class AcademicYear extends BaseModel
     {
         return $this->hasMany(Semester::class);
     }
+
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class);
+    }
 }
