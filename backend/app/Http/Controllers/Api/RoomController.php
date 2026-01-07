@@ -16,11 +16,7 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                \Illuminate\Validation\Rule::unique('rooms')->whereNull('deleted_at')->where('is_deleted', 0)
-            ],
+            'name' => 'required|string',
             'capacity' => 'integer|min:1',
             'type' => 'in:classroom,lab,hall'
         ]);
@@ -32,10 +28,7 @@ class RoomController extends Controller
     public function update(Request $request, Room $room)
     {
         $validated = $request->validate([
-            'name' => [
-                'string',
-                \Illuminate\Validation\Rule::unique('rooms')->ignore($room->id)->whereNull('deleted_at')->where('is_deleted', 0)
-            ],
+            'name' => 'string',
             'capacity' => 'integer|min:1',
             'type' => 'in:classroom,lab,hall'
         ]);

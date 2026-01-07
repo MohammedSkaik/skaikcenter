@@ -57,6 +57,12 @@ const router = createRouter({
           name: "academic-classes",
           component: () => import("../views/admin/academic/Classes.vue"),
         },
+        // Student Affairs Routes
+        {
+          path: "students/guardians",
+          name: "students-guardians",
+          component: () => import("../views/admin/students/Guardians.vue"),
+        },
       ],
     },
   ],

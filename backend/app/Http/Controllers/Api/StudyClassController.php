@@ -12,14 +12,13 @@ class StudyClassController extends Controller
     {
         $query = StudyClass::with(['grade', 'semester', 'subject']);
 
-        if ($request->has('type')) {
+        if ($request->has('type') && $request->type) {
             $query->where('type', $request->type);
         }
 
-        if ($request->has('semester_id')) {
+        if ($request->has('semester_id') && $request->semester_id) {
             $query->where('semester_id', $request->semester_id);
         }
-
         return response()->json(['data' => $query->latest()->get()]);
     }
 
@@ -28,15 +27,7 @@ class StudyClassController extends Controller
         $validated = $request->validate([
             'semester_id' => 'required|exists:semesters,id',
             'grade_id' => 'required|exists:grades,id',
-            'name' => [
-                'required',
-                'string',
-                \Illuminate\Validation\Rule::unique('study_classes')
-                    ->where('semester_id', $request->semester_id)
-                    ->where('grade_id', $request->grade_id)
-                    ->whereNull('deleted_at')
-                    ->where('is_deleted', 0)
-            ],
+            'name' => 'required|string',
             'type' => 'required|in:package,single',
             'subject_id' => 'required_if:type,single|nullable|exists:subjects,id',
             'max_students' => 'integer|min:1'
@@ -49,15 +40,7 @@ class StudyClassController extends Controller
     public function update(Request $request, StudyClass $studyClass)
     {
         $validated = $request->validate([
-            'name' => [
-                'string',
-                \Illuminate\Validation\Rule::unique('study_classes')
-                    ->where('semester_id', $studyClass->semester_id)
-                    ->where('grade_id', $studyClass->grade_id)
-                    ->ignore($studyClass->id)
-                    ->whereNull('deleted_at')
-                    ->where('is_deleted', 0)
-            ],
+            'name' => 'string',
             'max_students' => 'integer|min:1',
             'type' => 'in:package,single',
             'subject_id' => 'required_if:type,single|nullable|exists:subjects,id',

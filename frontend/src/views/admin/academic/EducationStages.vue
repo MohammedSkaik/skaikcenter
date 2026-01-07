@@ -170,6 +170,7 @@ import { ref, onMounted, reactive, watch } from 'vue'
 import api from '../../../api/axios'
 import { useToastStore } from '../../../stores/toast'
 import { useAcademicStore } from '../../../stores/academic' // Global Store
+import { useDialogStore } from '../../../stores/dialog'
 
 const academicStore = useAcademicStore()
 const grades = ref([])
@@ -182,6 +183,7 @@ const selectedGrade = ref(null)
 const isEditingPivot = ref(false)
 
 const toast = useToastStore()
+const dialog = useDialogStore()
 const formGrade = reactive({ name: '', level_order: '', package_price: 0 })
 const formPivot = reactive({ subject_id: null, price_single: 0, price_one_session: 0 })
 

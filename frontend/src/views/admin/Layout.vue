@@ -40,6 +40,13 @@
         <router-link to="/admin/academic/classes" active-class="bg-secondary text-primary font-bold shadow-lg" class="flex items-center py-2.5 px-4 rounded-lg text-gray-200 hover:bg-white/10 hover:text-white transition duration-200">
            <span class="ml-3">🎓</span> الشعب الدراسية
         </router-link>
+
+        <div class="border-t border-white/10 my-4"></div>
+        <p class="px-4 text-xs font-bold text-secondary-light uppercase tracking-wider mb-2">شؤون الطلاب</p>
+        
+        <router-link to="/admin/students/guardians" active-class="bg-secondary text-primary font-bold shadow-lg" class="flex items-center py-2.5 px-4 rounded-lg text-gray-200 hover:bg-white/10 hover:text-white transition duration-200">
+           <span class="ml-3">👨‍👩‍👧‍👦</span> أولياء الأمور
+        </router-link>
       </nav>
 
       <div class="p-4 border-t border-white/10">

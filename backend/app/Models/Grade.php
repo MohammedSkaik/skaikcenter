@@ -27,7 +27,7 @@ class Grade extends BaseModel
     public function subjects()
     {
         return $this->belongsToMany(Subject::class, 'grade_subject')
-            ->withPivot('price_package', 'price_single', 'price_one_session')
+            ->withPivot('price_single', 'price_one_session')
             ->withTimestamps();
     }
 }

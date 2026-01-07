@@ -62,7 +62,7 @@
                 <span class="bg-gray-100 px-2 py-1 rounded text-primary font-bold">0 / {{ cls.max_students }}</span>
             </td>
              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                 <button @click="deleteClass(cls)" class="text-red-400 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity">🗑️ حذف</button>
+                 <button @click="deleteClass(cls)" class="text-red-400 hover:text-red-700 opacity-0 transition-opacity">🗑️ حذف</button>
              </td>
           </tr>
            <tr v-if="classes.length === 0">

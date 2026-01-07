@@ -35,23 +35,12 @@ class EducationStageController extends Controller
             'package_price' => 'numeric|min:0'
         ]);
 
-        // Check unqiue name per year (Active only)
-        $exists = Grade::where('academic_year_id', $validated['academic_year_id'])
-            ->where('name', $validated['name'])
-            ->where(function ($q) {
-                $q->whereNull('deleted_at')->where('is_deleted', 0);
-            })
-            ->exists();
-
-        if ($exists) {
-            return response()->json(['message' => 'اسم المرحلة موجود بالفعل لهذه السنة الدراسية.'], 422);
-        }
-
         $grade = Grade::create([
             'academic_year_id' => $validated['academic_year_id'],
             'name' => $validated['name'],
             'level_order' => $validated['level_order'],
-            'package_price' => $validated['package_price'] ?? 0
+            'package_price' => $validated['package_price'] ?? 0,
+            'is_deleted' => 0 // Force active status
         ]);
 
         return response()->json(['message' => 'Grade created successfully', 'data' => $grade], 201);
@@ -60,14 +49,7 @@ class EducationStageController extends Controller
     public function update(Request $request, Grade $grade)
     {
         $validated = $request->validate([
-            'name' => [
-                'string',
-                \Illuminate\Validation\Rule::unique('grades')
-                    ->where('academic_year_id', $grade->academic_year_id)
-                    ->whereNull('deleted_at')
-                    ->where('is_deleted', 0)
-                    ->ignore($grade->id)
-            ],
+            'name' => 'string',
             'level_order' => 'integer'
         ]);
 
@@ -96,7 +78,6 @@ class EducationStageController extends Controller
         }
 
         $grade->subjects()->attach($validated['subject_id'], [
-            'price_package' => 0, // Legacy or unused on pivot for now
             'price_single' => $validated['price_single'] ?? 0,
             'price_one_session' => $validated['price_one_session'] ?? 0
         ]);

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\{
     SubjectController, // New
     RoomController,
     StudyClassController,
+    GuardianController,
     AuthController
 };
 
@@ -58,6 +59,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::apiResource('rooms', RoomController::class);
         Route::apiResource('study-classes', StudyClassController::class);
+
+        // Guardians & Students (Phase 3)
+        Route::apiResource('guardians', GuardianController::class);
     });
 
 });
